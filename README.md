@@ -1,4 +1,4 @@
-# Statamic Imagehotspots
+# <img src="src/icon.svg" height="20" width="20"> Statamic Imagehotspots
 
 > Statamic Imagehotspots is a Statamic addon that allows you to add hotspots to images.
 
@@ -21,8 +21,10 @@ composer require darinlarimore/statamic-imagehotspots
 **Note:** This `Image Hot Spots` field is intended to be used in conjunction with an `Assets` field. Configure the `Image Field Handle` setting to match this the `Assets` field handle.
 
 ### Setup Fields
-1. Create an `Assets` field for Image Hot Spots to pull from. Configure the Max Files setting to 1 and make the field required.
+1. Create an `Assets` field for Image Hot Spots to pull from. Configure the Max Files setting to 1 (it will only pull the first image).
 2. Add an `Image Hot Spots` field and configure the required `Image Field Handle` setting to match the previous `Assets` field's handle.
+
+![Image Hot Spots Field](/fieldType.png)
 
 ### Usage
 1. Add an image to the `Assets` field.
@@ -33,6 +35,7 @@ composer require darinlarimore/statamic-imagehotspots
 6. When selecting a new image click `Refresh Image` to load the new image into the field.
 
 ![Image Hot Spots Field](/fields.png)
+**Note:** Hotspots cannot be placed in the red border area to prevent breaking the page bounds at certain sizes.
 
 ### Front End Templating Example
 This example uses Tailwind, Alpine.js, and the X-anchor alpine.js plugin.
@@ -75,3 +78,5 @@ This example uses Tailwind, Alpine.js, and the X-anchor alpine.js plugin.
 </section>
 ```
 **Note:** the `-translate-x` and `-translate-y` classes are used to center the hotspots accurately and helps prevent the hotspots from breaking the page bounds.
+
+![Image Hot Spots Front End Example](/imageHotspots.png)

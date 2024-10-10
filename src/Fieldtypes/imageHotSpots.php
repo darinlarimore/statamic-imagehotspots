@@ -74,7 +74,9 @@ class ImageHotSpots extends Fieldtype
         return $data;
     }
 
-    protected $icon = 'plus-circle';
+    protected $icon = 'add-circle';
+
+    public $categories = ['media'];
 
     protected function configFieldItems(): array
     {
