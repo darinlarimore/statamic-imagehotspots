@@ -21,7 +21,7 @@ composer require darinlarimore/statamic-imagehotspots
 **Note:** This `Image Hot Spots` field is intended to be used in conjunction with an `Assets` field. Configure the `Image Field Handle` setting to match this the `Assets` field handle.
 
 ### Setup Fields
-1. Create an `Assets` field for Image Hot Spots to pull from. Configure the Max Files setting to 1 (it will only pull the first image).
+1. Create an `Assets` field for Image Hot Spots to pull from. Configure the Max Files setting to 1, it will only pull in the first image.
 2. Add an `Image Hot Spots` field and configure the required `Image Field Handle` setting to match the previous `Assets` field's handle.
 
 ![Image Hot Spots Field](/fieldType.png)
