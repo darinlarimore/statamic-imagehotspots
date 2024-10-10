@@ -5,13 +5,9 @@
             "Darinlarimore\\StatamicImagehotspots\\": "src"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Darinlarimore\\StatamicImagehotspots\\Tests\\": "tests"
-        }
-    },
     "require": {
-        "statamic/cms": "^5.0"
+        "statamic/cms": "^5.0",
+        "php": "^8.2"
     },
     "config": {
         "allow-plugins": {
