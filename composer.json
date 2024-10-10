@@ -1,0 +1,37 @@
+{
+    "name": "darinlarimore/statamic-imagehotspots",
+    "autoload": {
+        "psr-4": {
+            "Darinlarimore\\StatamicImagehotspots\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Darinlarimore\\StatamicImagehotspots\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "statamic/cms": "^5.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "pixelfear/composer-dist-plugin": true
+        }
+    },
+    "extra": {
+        "statamic": {
+            "name": "Statamic Imagehotspots",
+            "description": "Statamic Imagehotspots addon"
+        },
+        "laravel": {
+            "providers": [
+                "Darinlarimore\\StatamicImagehotspots\\ServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
