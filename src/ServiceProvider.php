@@ -4,8 +4,6 @@ namespace Darinlarimore\StatamicImagehotspots;
 
 use Statamic\Providers\AddonServiceProvider;
 use Darinlarimore\StatamicImagehotspots\Fieldtypes\ImageHotSpots;
-use Darinlarimore\StatamicImagehotspots\Http\Controllers\AssetController;
-use Illuminate\Support\Facades\Route;
 
 class ServiceProvider extends AddonServiceProvider
 {
@@ -20,10 +18,5 @@ class ServiceProvider extends AddonServiceProvider
     public function bootAddon()
     {
         ImageHotSpots::register();
-
-        $this->registerActionRoutes(function () {
-            Route::post('asset', AssetController::class)
-                ->middleware('statamic.cp.authenticated');
-        });
     }
 }
