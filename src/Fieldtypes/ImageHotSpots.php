@@ -3,8 +3,10 @@
 namespace Darinlarimore\StatamicImagehotspots\Fieldtypes;
 
 use Statamic\Fields\Fieldtype;
-use Statamic\Facades\Image;
-use Statamic\Facades\Asset;
+use Statamic\Exceptions\AssetContainerNotFoundException;
+use Statamic\Facades\AssetContainer;
+use Statamic\Fieldtypes\Assets\UndefinedContainerException;
+use Statamic\Statamic;
 
 class ImageHotSpots extends Fieldtype
 {
@@ -31,36 +33,20 @@ class ImageHotSpots extends Fieldtype
 
     public function preload()
     {
+        $version = Statamic::version();
+        $versionArray = explode('.', $version);
+        return [
+            'default' => $this->defaultValue(),
+            'data' => $this->getItemData($this->field->value() ?? []),
+            'container' => $this->container()->handle(),
+            'statamic_version' => $version,
+            'statamic_major_version' => isset($versionArray[0]) ? (int)$versionArray[0] : 4
+        ];
+    }
 
-        $data = [];
-
-        $imageFieldHandle = $this->config('imageFieldHandle');
-
-        if ($imageFieldHandle === null) {
-            return $data;
-        }
-
-        // Find value of the nested array key with the same handle of the image field
-        $imageUrl = collect($this->field->parent()->blocks)->pluck($imageFieldHandle)->filter()->flatten()->first();
-
-        if ($imageUrl === null) {
-            return $data;
-        }
-
-        $image = Asset::find($imageUrl);
-
-        if ($imageUrl === null) {
-            return $data;
-        }
-
-        if ($image->extension() === 'svg') {
-            $data['image'] = $image->url();
-            return $data;
-        }
-
-        $data['image'] = Image::manipulate($image)->params(['w' => 800])->build();
-
-        return $data;
+    public function getItemData($items)
+    {
+        return $items;
     }
 
     /**
@@ -78,15 +64,53 @@ class ImageHotSpots extends Fieldtype
 
     public $categories = ['media'];
 
+    protected function container()
+    {
+        if ($configured = $this->config('container')) {
+            if ($container = AssetContainer::find($configured)) {
+                return $container;
+            }
+
+            throw new AssetContainerNotFoundException($configured);
+        }
+
+        if (($containers = AssetContainer::all())->count() === 1) {
+            return $containers->first();
+        }
+
+        throw new UndefinedContainerException;
+    }
+
     protected function configFieldItems(): array
     {
         return [
-            'imageFieldHandle' => [
-                'display' => 'Image Field Handle',
-                'instructions' => 'The handle of the accompanying image field from which the image will be loaded.',
-                'required' => true,
-                'type' => 'slug',
-                'width' => 50
+            'container' => [
+                'display' => __('Container'),
+                'instructions' => __('statamic::fieldtypes.assets.config.container'),
+                'type' => 'asset_container',
+                'max_items' => 1,
+                'mode' => 'select',
+                'width' => 50,
+            ],
+            'folder' => [
+                'display' => __('Folder'),
+                'instructions' => __('statamic::fieldtypes.assets.config.folder'),
+                'type' => 'asset_folder',
+                'max_items' => 1,
+                'width' => 50,
+            ],
+            'restrict' => [
+                'display' => __('Restrict'),
+                'instructions' => __('statamic::fieldtypes.assets.config.restrict'),
+                'type' => 'toggle',
+                'width' => 50,
+            ],
+            'allow_uploads' => [
+                'display' => __('Allow Uploads'),
+                'instructions' => __('statamic::fieldtypes.assets.config.allow_uploads'),
+                'type' => 'toggle',
+                'default' => true,
+                'width' => 50,
             ],
         ];
     }

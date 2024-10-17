@@ -1,42 +1,62 @@
 <template>
-	<div v-if="this.meta.image">
-		<div class="i-my-2 i-flex i-justify-end">
-			<button @click="refreshImage" class="btn">Refresh Image</button>
-		</div>
-		<div class="i-relative">
-			<!-- hotspots should not be placed within the red border -->
-			<div class="i-absolute i-w-full i-h-full i-border-red-500 i-border-opacity-25 i-border-[48px]"></div>
-			<img ref="image" :src="this.meta.image" class="i-w-full i-h-auto i-select-none" />
-			<div
-				v-for="(hotspot, index) in hotspots"
-				:key="index"
-				class="i-absolute i-cursor-move -i-translate-x-[12px] -i-translate-y-[12px]"
-				:style="{ top: hotspot.y + '%', left: hotspot.x + '%' }"
-				@mousedown="dragStart(index, $event)"
-			>
-				<div class="i-w-6 i-h-6 i-bg-blue-500 i-border-white i-border-2 i-rounded-full i-flex i-justify-center i-items-center i-text-xs">{{ index }}</div>
-			</div>
-		</div>
-		<div class="i-mt-2 i-w-full">
-			<div class="i-grid i-gap-2">
-				<div v-for="(hotspot, index) in hotspots" :key="index" class="flex gap-2 items-center">
-					<div title="x: {hotspot.y}" class="i-w-6 i-h-6 i-flex-none i-bg-blue-500 i-border-white i-border-2 i-rounded-full i-flex i-justify-center i-items-center i-text-xs">{{ index }}</div>
-					<textarea rows="2" type="text" class="input-text" v-model="hotspot.content" @change="updateValue" />
-					<div>
-						<button @click="hotspots.splice(index, 1)"> × </button>
-					</div>
+	<div>
+		<assets-fieldtype
+			v-if="!data.imageFile.url"
+			class="assets-fieldtype"
+			:value="imageFileId"
+			ref="assets"
+			handle="assets"
+			:config="config"
+			:readOnly="readOnly"
+			@input="updateImageFile"
+		></assets-fieldtype>
+
+		<div v-else>
+			<div class="i-flex i-my-4 i-justify-between i-items-center i-p-4">
+				<p class="i-text-sm">Selected 3D Model:</p>
+				<div class="i-flex i-items-center i-gap-2">
+					<p class="i-text-sm">{{data.imageFile.fileName}}</p>
+					<button @click="imageFileClear"> ×
+					</button>
 				</div>
 			</div>
 		</div>
-		<div class="i-mt-2">
-			<button @click="addHotspot" class="btn">Add Hotspot</button>
-		</div>
-	</div>
+		<div v-if="data.imageFile.error" class="d-text-red-500">{{ data.imageFile.error }}</div>
 
-	<div v-else class="i-flex i-justify-between i-items-center">
-		<p class="i-mt-2 i-text-sm">Select an image and click the refresh button</p>
-		<div class="i-mt-2">
-			<button @click="refreshImage" class="btn">Refresh Image</button>
+
+		<div v-if="data.imageFile.url">
+			<div class="i-relative">
+				<!-- hotspots should not be placed within the red border -->
+				<div class="i-absolute i-w-full i-h-full i-border-red-500 i-border-opacity-25 i-border-[48px]"></div>
+				<img ref="image" :src="data.imageFile.url" class="i-w-full i-h-auto i-select-none" />
+				<div
+					v-for="(hotspot, index) in data.hotspots"
+					:key="index"
+					class="i-absolute i-cursor-move -i-translate-x-[12px] -i-translate-y-[12px]"
+					:style="{ top: hotspot.y + '%', left: hotspot.x + '%' }"
+					@mousedown="dragStart(index, $event)"
+				>
+					<div class="i-w-6 i-h-6 i-bg-blue-500 i-border-white i-border-2 i-rounded-full i-flex i-justify-center i-items-center i-text-xs">{{ index }}</div>
+				</div>
+			</div>
+			<div class="i-mt-2 i-w-full">
+				<div class="i-grid i-gap-2">
+					<div v-for="(hotspot, index) in data.hotspots" :key="index" class="flex gap-2 items-center">
+						<div title="x: {hotspot.y}" class="i-w-6 i-h-6 i-flex-none i-bg-blue-500 i-border-white i-border-2 i-rounded-full i-flex i-justify-center i-items-center i-text-xs">{{ index }}</div>
+						<textarea rows="2" type="text" class="input-text" v-model="hotspot.content" />
+						<div>
+							<button @click="data.hotspots.splice(index, 1)"> × </button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="i-mt-2">
+				<button @click="addHotspot" class="btn">Add Hotspot</button>
+			</div>
+		</div>
+
+		<div v-else class="i-flex i-justify-between i-items-center">
+			<p class="i-mt-2 i-text-sm">Select an image</p>
 		</div>
 	</div>
 </template>
@@ -44,56 +64,81 @@
 <script>
 	export default {
 		mixins: [Fieldtype],
-		inject: ['storeName'],
 		data() {
 				return {
+					data: {
+						imageFile: {
+							url: this.value?.imageFile?.url || null,
+							id: this.value?.imageFile?.id || null,
+							fileName: this.value?.imageFile?.fileName || null,
+							alt: this.value?.imageFile?.alt || null,
+							error: this.value?.imageFile?.error || null,
+						},
 						hotspots: this.value?.hotspots || [],
+					}
 				};
 		},
 
 		mounted() {
-			if (!this.meta.image) {
-				this.refreshImage()
+			this.config.max_files = 1;
+			this.config.min_files = 0;
+			this.config.mode = 'list';
+		},
+
+		watch: {
+			data: {
+				deep: true,
+				handler() {
+					this.update(this.data);
+				}
 			}
 		},
 		computed: {
+			imageFileId() {
+				return this.data.imageFile.id ? [this.data.imageFile.id] : [];
+			},
 		},
 		methods: {
-			refreshImage() {
-				const values = this.$store.state.publish[this.storeName].values;
-				const imageField = this.config.imageFieldHandle;
-
-				// Search recursively in object for the imageField
-				const findImage = (obj) => {
-					for (const key in obj) {
-						if (key === imageField) {
-							return obj[key];
-						}
-						if (typeof obj[key] === 'object') {
-							const result = findImage(obj[key]);
-							if (result) {
-								return result;
-							}
-						}
-					}
+			imageFileClear() {
+				this.data.imageFile = {
+					url: null,
+					id: null,
+					fileName: null,
+					error: null,
 				};
+			},
 
-				// Send image to the asset thumbnail controller
-				this.$axios.post('/!/statamic-imagehotspots/asset' ,
-					findImage(values)[0]
-				).then((response) => {
-					this.updateMeta({image: response.data});
-				});
+			updateImageFile(assets) {
+				const allowFileTypes = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+
+				if (assets[0]) {
+					this.$axios
+					.post(this.cpUrl("assets-fieldtype"), {
+							assets:[ assets[0] ],
+					})
+					.then((response) => {
+						if (allowFileTypes.includes(response.data[0].extension)) {
+							this.data.imageFile = {
+								url: response.data[0].url,
+								id: response.data[0].id,
+								fileName: response.data[0].basename,
+								alt: response.data[0].values.alt,
+							};
+						} else {
+							this.data.imageFile = {
+								error: "Invalid file type",
+							};
+						}
+					})
+				}
 			},
+
 			addHotspot() {
-				this.hotspots.push({ x: 50, y: 50 });
-				this.updateValue();
+				this.data.hotspots.push({ x: 50, y: 50, content: '' });
 			},
-			updateValue() {
-				this.$emit('input', { hotspots: this.hotspots });
-			},
+
 			dragStart(index, event) {
-				const hotspot = this.hotspots[index];
+				const hotspot = this.data.hotspots[index];
 				const startX = event.clientX;
 				const startY = event.clientY;
 				const startLeft = hotspot.x;
@@ -113,8 +158,6 @@
 
 					hotspot.x = x;
 					hotspot.y = y;
-
-					this.updateValue();
 				};
 
 				const mouseUp = () => {
@@ -124,6 +167,11 @@
 
 				document.addEventListener('mousemove', mouseMove);
 				document.addEventListener('mouseup', mouseUp);
+			},
+
+			cpUrl(url) {
+				url = Statamic.$config.get("cpUrl") + "/" + url;
+				return url.replace(/([^:])(\/\/+)/g, "$1/");
 			},
 		}
 	};
