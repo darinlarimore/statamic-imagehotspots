@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<assets-fieldtype
+			v-if="!data.imageFile.url"
 			class="assets-fieldtype"
 			:value="imageFileId"
 			ref="assets"
@@ -9,6 +10,19 @@
 			:readOnly="readOnly"
 			@input="updateImageFile"
 		></assets-fieldtype>
+
+		<div v-else>
+			<div class="i-flex i-my-4 i-justify-between i-items-center i-p-4">
+				<p class="i-text-sm">Selected 3D Model:</p>
+				<div class="i-flex i-items-center i-gap-2">
+					<p class="i-text-sm">{{data.imageFile.fileName}}</p>
+					<button @click="imageFileClear"> ×
+					</button>
+				</div>
+			</div>
+		</div>
+		<div v-if="data.imageFile.error" class="d-text-red-500">{{ data.imageFile.error }}</div>
+
 
 		<div v-if="data.imageFile.url">
 			<div class="i-relative">
@@ -50,7 +64,6 @@
 <script>
 	export default {
 		mixins: [Fieldtype],
-		inject: ['storeName'],
 		data() {
 				return {
 					data: {
@@ -58,6 +71,7 @@
 							url: this.value?.imageFile?.url || null,
 							id: this.value?.imageFile?.id || null,
 							fileName: this.value?.imageFile?.fileName || null,
+							alt: this.value?.imageFile?.alt || null,
 							error: this.value?.imageFile?.error || null,
 						},
 						hotspots: this.value?.hotspots || [],
@@ -85,6 +99,14 @@
 			},
 		},
 		methods: {
+			imageFileClear() {
+				this.data.imageFile = {
+					url: null,
+					id: null,
+					fileName: null,
+					error: null,
+				};
+			},
 
 			updateImageFile(assets) {
 				const allowFileTypes = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
