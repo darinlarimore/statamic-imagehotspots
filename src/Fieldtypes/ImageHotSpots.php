@@ -2,10 +2,12 @@
 
 namespace Darinlarimore\StatamicImagehotspots\Fieldtypes;
 
+use Facades\Statamic\Fieldtypes\RowId;
 use Statamic\Fields\Fieldtype;
 use Statamic\Exceptions\AssetContainerNotFoundException;
 use Statamic\Facades\AssetContainer;
 use Statamic\Fields\Fields;
+use Statamic\Fields\Values;
 use Statamic\Fieldtypes\Assets\UndefinedContainerException;
 use Statamic\Statamic;
 
@@ -57,6 +59,41 @@ class ImageHotSpots extends Fieldtype
     public function process($data)
     {
         return $data;
+    }
+
+    public function augment($value)
+    {
+        return $this->performAugmentation($value, false);
+    }
+
+    public function shallowAugment($value)
+    {
+        return $this->performAugmentation($value, true);
+    }
+
+    private function performAugmentation($value, $shallow)
+    {
+        return collect($value)->map(function ($row, $index) use ($shallow) {
+            if ($index === 'hotspots') {
+                return $this->performAugmentation($row, $shallow);
+            }
+
+            $values = $this->augmentOne($index, $row, $shallow);
+
+            return new Values($values->merge([RowId::handle() => $row[RowId::handle()] ?? null])->all());
+        });
+    }
+
+    private function augmentOne($index, $row, $shallow)
+    {
+        $method = $shallow ? 'shallowAugment' : 'augment';
+
+        if (array_key_exists('content', $row)) {
+            return collect($row)->merge([
+                'content' => $this->augmentOne($index, $row['content'], $shallow),
+            ]);
+        }
+        return $this->fields($index)->addValues($row)->{$method}()->values();
     }
 
     public function fields($index = -1)
