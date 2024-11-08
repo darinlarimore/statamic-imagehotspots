@@ -78,10 +78,8 @@ class ImageHotSpots extends Fieldtype
                 return $this->performAugmentation($row, $shallow);
             }
 
-            $values = $this->augmentOne($index, $row, $shallow);
-
-            return new Values($values->merge([RowId::handle() => $row[RowId::handle()] ?? null])->all());
-        });
+            return $this->augmentOne($index, $row, $shallow);
+        })->all();
     }
 
     private function augmentOne($index, $row, $shallow)
@@ -93,7 +91,10 @@ class ImageHotSpots extends Fieldtype
                 'content' => $this->augmentOne($index, $row['content'], $shallow),
             ]);
         }
-        return $this->fields($index)->addValues($row)->{$method}()->values();
+
+        $values = $this->fields($index)->addValues($row)->{$method}()->values();
+
+        return new Values($values->merge([RowId::handle() => $row[RowId::handle()] ?? null])->all());
     }
 
     public function fields($index = -1)
