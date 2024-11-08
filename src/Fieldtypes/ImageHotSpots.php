@@ -5,19 +5,17 @@ namespace Darinlarimore\StatamicImagehotspots\Fieldtypes;
 use Statamic\Fields\Fieldtype;
 use Statamic\Exceptions\AssetContainerNotFoundException;
 use Statamic\Facades\AssetContainer;
+use Statamic\Fields\Fields;
 use Statamic\Fieldtypes\Assets\UndefinedContainerException;
 use Statamic\Statamic;
 
 class ImageHotSpots extends Fieldtype
 {
-    /**
-     * The blank/default value.
-     *
-     * @return array
-     */
-    public function defaultValue()
+    protected function defaultRowData()
     {
-        return null;
+        return $this->fields()->all()->map(function ($field) {
+            return $field->fieldtype()->preProcess($field->defaultValue());
+        });
     }
 
     /**
@@ -36,8 +34,9 @@ class ImageHotSpots extends Fieldtype
         $version = Statamic::version();
         $versionArray = explode('.', $version);
         return [
-            'default' => $this->defaultValue(),
+            'defaults' => $this->defaultRowData()->all(),
             'data' => $this->getItemData($this->field->value() ?? []),
+            'metas' => $this->fields()->meta()->all(),
             'container' => $this->container()->handle(),
             'statamic_version' => $version,
             'statamic_major_version' => isset($versionArray[0]) ? (int)$versionArray[0] : 4
@@ -58,6 +57,11 @@ class ImageHotSpots extends Fieldtype
     public function process($data)
     {
         return $data;
+    }
+
+    public function fields($index = -1)
+    {
+        return new Fields($this->config('fields'), $this->field()->parent(), $this->field(), $index);
     }
 
     protected $icon = 'add-circle';
@@ -84,33 +88,49 @@ class ImageHotSpots extends Fieldtype
     protected function configFieldItems(): array
     {
         return [
-            'container' => [
-                'display' => __('Container'),
-                'instructions' => __('statamic::fieldtypes.assets.config.container'),
-                'type' => 'asset_container',
-                'max_items' => 1,
-                'mode' => 'select',
-                'width' => 50,
+            [
+                'display' => __('Fields'),
+                'fields' => [
+                    'fields' => [
+                        'display' => __('Fields'),
+                        'instructions' => __('statamic::fieldtypes.grid.config.fields'),
+                        'type' => 'fields',
+                        'full_width_setting' => true,
+                    ],
+                ],
             ],
-            'folder' => [
-                'display' => __('Folder'),
-                'instructions' => __('statamic::fieldtypes.assets.config.folder'),
-                'type' => 'asset_folder',
-                'max_items' => 1,
-                'width' => 50,
-            ],
-            'restrict' => [
-                'display' => __('Restrict'),
-                'instructions' => __('statamic::fieldtypes.assets.config.restrict'),
-                'type' => 'toggle',
-                'width' => 50,
-            ],
-            'allow_uploads' => [
-                'display' => __('Allow Uploads'),
-                'instructions' => __('statamic::fieldtypes.assets.config.allow_uploads'),
-                'type' => 'toggle',
-                'default' => true,
-                'width' => 50,
+            [
+                'display' => __('Assets'),
+                'fields' => [
+                    'container' => [
+                        'display' => __('Container'),
+                        'instructions' => __('statamic::fieldtypes.assets.config.container'),
+                        'type' => 'asset_container',
+                        'max_items' => 1,
+                        'mode' => 'select',
+                        'width' => 50,
+                    ],
+                    'folder' => [
+                        'display' => __('Folder'),
+                        'instructions' => __('statamic::fieldtypes.assets.config.folder'),
+                        'type' => 'asset_folder',
+                        'max_items' => 1,
+                        'width' => 50,
+                    ],
+                    'restrict' => [
+                        'display' => __('Restrict'),
+                        'instructions' => __('statamic::fieldtypes.assets.config.restrict'),
+                        'type' => 'toggle',
+                        'width' => 50,
+                    ],
+                    'allow_uploads' => [
+                        'display' => __('Allow Uploads'),
+                        'instructions' => __('statamic::fieldtypes.assets.config.allow_uploads'),
+                        'type' => 'toggle',
+                        'default' => true,
+                        'width' => 50,
+                    ],
+                ]
             ],
         ];
     }
