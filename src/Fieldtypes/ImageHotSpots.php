@@ -3,6 +3,7 @@
 namespace Darinlarimore\StatamicImagehotspots\Fieldtypes;
 
 use Facades\Statamic\Fieldtypes\RowId;
+use Illuminate\Support\Arr;
 use Statamic\Fields\Fieldtype;
 use Statamic\Exceptions\AssetContainerNotFoundException;
 use Statamic\Facades\AssetContainer;
@@ -92,6 +93,11 @@ class ImageHotSpots extends Fieldtype
             ]);
         }
 
+        $isAssetField = $index == 'imageFile';
+        if ($isAssetField) {
+            $row = ['asset' => $row];
+        }
+
         $values = $this->fields($index)->addValues($row)->{$method}()->values();
 
         return new Values($values->merge([RowId::handle() => $row[RowId::handle()] ?? null])->all());
@@ -99,7 +105,13 @@ class ImageHotSpots extends Fieldtype
 
     public function fields($index = -1)
     {
-        return new Fields($this->config('fields'), $this->field()->parent(), $this->field(), $index);
+        $fields = $this->config('fields');
+        $isAssetField = $index == 'imageFile';
+        $fields = Arr::where($fields, fn($field) =>
+            ($field['handle'] == 'asset') === $isAssetField
+        );
+
+        return new Fields($fields, $this->field()->parent(), $this->field(), $index);
     }
 
     protected $icon = 'add-circle';
@@ -138,7 +150,7 @@ class ImageHotSpots extends Fieldtype
                 ],
             ],
             [
-                'display' => __('Assets'),
+                'display' => __('Asset'),
                 'fields' => [
                     'container' => [
                         'display' => __('Container'),
