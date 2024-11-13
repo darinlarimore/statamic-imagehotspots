@@ -39,8 +39,7 @@ class ImageHotSpots extends Fieldtype
         return [
             'defaults' => $this->defaultRowData()->all(),
             'data' => $this->getItemData($this->field->value() ?? []),
-            'metas' => $this->fields()->meta()->all(),
-            'container' => $this->container()->handle(),
+            'metas' => $this->fields()->meta()->all(), 
             'statamic_version' => $version,
             'statamic_major_version' => isset($versionArray[0]) ? (int)$versionArray[0] : 4
         ];
