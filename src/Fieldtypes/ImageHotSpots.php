@@ -105,10 +105,13 @@ class ImageHotSpots extends Fieldtype
     public function fields($index = -1)
     {
         $fields = $this->config('fields');
-        $isAssetField = $index == 'imageFile';
-        $fields = Arr::where($fields, fn($field) =>
-            ($field['handle'] == 'asset') === $isAssetField
-        );
+        
+        if ($index !== -1) {
+            $isAssetField = $index == 'imageFile';
+            $fields = Arr::where($fields, fn($field) =>
+                ($field['handle'] == 'asset') === $isAssetField
+            );
+        }
 
         return new Fields($fields, $this->field()->parent(), $this->field(), $index);
     }
