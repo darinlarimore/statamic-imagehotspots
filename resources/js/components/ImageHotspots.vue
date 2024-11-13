@@ -244,13 +244,12 @@ export default {
 		},
 
 		metaUpdated(handle, value) {
-			let meta = clone(this.meta.metas)
-			meta[handle] = value
-			this.$emit('meta-updated', meta)
+			this.meta.metas[handle] = value
+			this.$emit('meta-updated', this.meta)
 		},
 
 		fieldPath(handle, index) {
-			return `${this.name}.hotspots.${index}.content.${handle}`
+			return `${this.name}.hotspots[${index}].content.${handle}`
 		},
 
 		errors(handle, index) {
