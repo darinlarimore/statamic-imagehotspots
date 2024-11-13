@@ -49,6 +49,9 @@
 					</div>
 				</div>
 			</div>
+			<div class="i-mt-2">
+				<button @click="addHotspot" class="btn">Add Hotspot</button>
+			</div>
 			<div class="i-mt-2 i-w-full">
 				<div class="i-grid i-gap-2">
 					<div
@@ -97,9 +100,6 @@
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="i-mt-2">
-				<button @click="addHotspot" class="btn">Add Hotspot</button>
 			</div>
 		</div>
 
