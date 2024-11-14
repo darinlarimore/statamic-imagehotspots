@@ -2,8 +2,8 @@
 
 namespace Darinlarimore\StatamicImagehotspots\Fieldtypes;
 
-use Facades\Statamic\Fieldtypes\RowId;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Statamic\Fields\Fieldtype;
 use Statamic\Exceptions\AssetContainerNotFoundException;
 use Statamic\Facades\AssetContainer;
@@ -21,44 +21,46 @@ class ImageHotSpots extends Fieldtype
         });
     }
 
-    /**
-     * Pre-process the data before it gets sent to the publish page.
-     *
-     * @param  mixed  $data
-     * @return array|mixed
-     */
+    public function process($data)
+    {
+        return collect($data)->map($this->processRow(...))->all();
+    }
+
+    private function processRow($row, $index)
+    {
+        if ($index === 'hotspots' || $index === 'content') {
+            return collect($row)->map($this->processRow(...))->all();
+        }
+
+        return array_merge($row, $this->fields($index)->addValues($row)->process()->values()->all());
+    }
+
     public function preProcess($data)
     {
-        return $data;
+        return collect($data)->map($this->preProcessRow(...))->all();
+    }
+
+    private function preProcessRow($row, $index)
+    {
+        if ($index === 'hotspots' || $index === 'content') {
+            return collect($row)->map($this->preProcessRow(...))->all();
+        }
+
+        return array_merge($row, $this->fields($index)->addValues($row)->preProcess()->values()->all());
     }
 
     public function preload()
     {
-        $version = Statamic::version();
-        $versionArray = explode('.', $version);
         return [
             'defaults' => $this->defaultRowData()->all(),
             'data' => $this->getItemData($this->field->value() ?? []),
-            'metas' => $this->fields()->meta()->all(), 
-            'statamic_version' => $version,
-            'statamic_major_version' => isset($versionArray[0]) ? (int)$versionArray[0] : 4
+            'metas' => $this->fields()->meta()->all(),
         ];
     }
 
     public function getItemData($items)
     {
         return $items;
-    }
-
-    /**
-     * Process the data before it gets saved.
-     *
-     * @param  mixed  $data
-     * @return array|mixed
-     */
-    public function process($data)
-    {
-        return $data;
     }
 
     public function augment($value)
@@ -74,44 +76,40 @@ class ImageHotSpots extends Fieldtype
     private function performAugmentation($value, $shallow)
     {
         return collect($value)->map(function ($row, $index) use ($shallow) {
-            if ($index === 'hotspots') {
-                return $this->performAugmentation($row, $shallow);
-            }
-
-            return $this->augmentOne($index, $row, $shallow);
+            return $this->augmentRow($index, $row, $shallow);
         })->all();
     }
 
-    private function augmentOne($index, $row, $shallow)
+    private function augmentRow($index, $row, $shallow)
     {
-        $method = $shallow ? 'shallowAugment' : 'augment';
+        if ($index === 'hotspots') {
+            return collect($row)->map(function ($row, $index) use ($shallow) {
+                return $this->augmentRow($index, $row, $shallow);
+            })->all();
+        }
 
         if (array_key_exists('content', $row)) {
-            return collect($row)->merge([
-                'content' => $this->augmentOne($index, $row['content'], $shallow),
-            ]);
+            return new Values(
+                array_merge($row, [
+                    'content' => $this->augmentRow('content', $row['content'], $shallow)
+                ])
+            );
         }
 
-        $isAssetField = $index == 'imageFile';
-        if ($isAssetField) {
-            $row = ['asset' => $row];
+        $method = $shallow ? 'shallowAugment' : 'augment';
+
+        if ($index == 'imageFile') {
+            return $row;
         }
 
-        $values = $this->fields($index)->addValues($row)->{$method}()->values();
+        $data = $this->fields($index)->addValues($row)->{$method}()->values();
 
-        return new Values($values->merge([RowId::handle() => $row[RowId::handle()] ?? null])->all());
+        return new Values($data->filter(fn($value) => $value->raw())->all());
     }
 
     public function fields($index = -1)
     {
         $fields = $this->config('fields');
-        
-        if ($index !== -1) {
-            $isAssetField = $index == 'imageFile';
-            $fields = Arr::where($fields, fn($field) =>
-                ($field['handle'] == 'asset') === $isAssetField
-            );
-        }
 
         return new Fields($fields, $this->field()->parent(), $this->field(), $index);
     }
