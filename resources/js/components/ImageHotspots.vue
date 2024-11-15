@@ -84,7 +84,7 @@
 									v-for="field in fields"
 									:key="field.handle"
 									:field="field"
-									:meta="meta.metas[field.handle]"
+									:meta="meta.metas[index][field.handle]"
 									:value="hotspot.content[field.handle]"
 									:parent-name="name"
 									:set-index="index"
@@ -92,7 +92,7 @@
 									:field-path="fieldPath(field.handle, index)"
 									class="p-4"
 									@updated="updated(field.handle, index, $event)"
-									@meta-updated="metaUpdated(field.handle, $event)"
+									@meta-updated="metaUpdated(field.handle, index, $event)"
 									@focus="$emit('focus')"
 									@blur="$emit('blur')"
 								/>
@@ -243,8 +243,8 @@ export default {
 			this.data.hotspots[index].content[handle] = value
 		},
 
-		metaUpdated(handle, value) {
-			this.meta.metas[handle] = value
+		metaUpdated(handle, index, value) {
+			this.meta.metas[index][handle] = value
 			this.$emit('meta-updated', this.meta)
 		},
 
