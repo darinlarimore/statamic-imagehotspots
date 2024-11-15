@@ -10,7 +10,6 @@ use Statamic\Facades\AssetContainer;
 use Statamic\Fields\Fields;
 use Statamic\Fields\Values;
 use Statamic\Fieldtypes\Assets\UndefinedContainerException;
-use Statamic\Statamic;
 
 class ImageHotSpots extends Fieldtype
 {
@@ -102,6 +101,12 @@ class ImageHotSpots extends Fieldtype
             return $row;
         }
 
+        // Fix assets breaking when they start with `asset::`
+        foreach ($this->fieldsByType('assets') as $field) {
+            $assets = Arr::wrap($row[$field] ?? []);
+            $row[$field] = Arr::map($assets, fn($asset) => Str::after($asset, '::'));
+        }
+
         $data = $this->fields($index)->addValues($row)->{$method}()->values();
 
         return new Values($data->filter(fn($value) => $value->raw())->all());
@@ -112,6 +117,13 @@ class ImageHotSpots extends Fieldtype
         $fields = $this->config('fields');
 
         return new Fields($fields, $this->field()->parent(), $this->field(), $index);
+    }
+
+    public function fieldsByType($type)
+    {
+        return collect($this->config('fields'))
+            ->filter(fn($field) => ($field['field']['type'] ?? null) === $type)
+            ->pluck('handle');
     }
 
     protected $icon = 'add-circle';
