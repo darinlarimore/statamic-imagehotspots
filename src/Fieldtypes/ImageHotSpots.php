@@ -50,10 +50,15 @@ class ImageHotSpots extends Fieldtype
 
     public function preload()
     {
+        $values = $this->field->value()['hotspots'] ?? [];
+        $metas = collect($values)->map(function($value) {
+            return $this->fields()->addValues($value['content'])->meta()->all();
+        });
+
         return [
             'defaults' => $this->defaultRowData()->all(),
             'data' => $this->getItemData($this->field->value() ?? []),
-            'metas' => $this->fields()->meta()->all(),
+            'metas' => $metas,
         ];
     }
 
