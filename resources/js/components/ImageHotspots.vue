@@ -186,12 +186,13 @@ export default {
 		},
 
 		addHotspot() {
-			this.data.hotspots.push({ x: 50, y: 50, content: { ...JSON.parse(JSON.stringify(this.meta.defaults)) } })
-            this.meta.metas.push(JSON.parse(JSON.stringify(this.meta.defaults)))
+            this.data.hotspots.push({ x: 50, y: 50, content: { ...JSON.parse(JSON.stringify(this.meta.defaults)) } })
+            this.meta.metas.push(JSON.parse(JSON.stringify(this.meta.defaultmeta)))
 		},
 
         removeHotspot(index) {
             this.data.hotspots.splice(index, 1)
+            this.meta.metas.splice(index, 1)
         },
 
 		dragStart(index, event) {

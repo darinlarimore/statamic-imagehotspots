@@ -57,6 +57,7 @@ class ImageHotSpots extends Fieldtype
 
         return [
             'defaults' => $this->defaultRowData()->all(),
+            'defaultmeta' => $this->fields()->meta()->all(),
             'data' => $this->getItemData($this->field->value() ?? []),
             'metas' => $metas,
         ];
