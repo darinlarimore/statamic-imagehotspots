@@ -60,7 +60,7 @@
 						class="flex gap-2 items-center"
 					>
 						<div class="replicator-set w-full">
-							<div class="replicator-set-header">
+							<div class="replicator-set-header cursor-pointer" @click="toggleOpen(index)">
 								<span class="text-xs rtl:ml-2 ltr:mr-2 p-2 whitespace-nowrap">
 									Hotspot {{ index }}
 								</span>
@@ -69,7 +69,7 @@
 								>
 									<button
 										class="flex self-end group items-center"
-										@click="removeHotspot(index)"
+										@click.stop="removeHotspot(index)"
 										:aria-label="__('Delete Row')"
 									>
 										<svg-icon
@@ -79,7 +79,10 @@
 									</button>
 								</div>
 							</div>
-							<div class="replicator-set-body publish-fields @container">
+							<div
+                                class="replicator-set-body publish-fields @container"
+                                v-show="isOpen(index)"
+                            >
 								<set-field
 									v-for="field in fields"
                                     v-show="showField(field, index)"
@@ -133,6 +136,7 @@ export default {
 				},
 				hotspots: this.value?.hotspots || [],
 			},
+            openHotspots: [],
 		}
 	},
 
@@ -160,6 +164,18 @@ export default {
 		},
 	},
 	methods: {
+        toggleOpen(index) {
+            if (this.isOpen(index)) {
+                this.openHotspots.splice(this.openHotspots.indexOf(index), 1)
+            } else {
+                this.openHotspots.push(index)
+            }
+        },
+
+        isOpen(index) {
+            return this.openHotspots.indexOf(index) >= 0
+        },
+
 		imageFileClear() {
 			this.data.imageFile = {
 				url: null,
@@ -197,6 +213,7 @@ export default {
 		addHotspot() {
             this.data.hotspots.push({ x: 50, y: 50, content: { ...JSON.parse(JSON.stringify(this.meta.defaults)) } })
             this.meta.metas.push(JSON.parse(JSON.stringify(this.meta.defaultmeta)))
+            this.toggleOpen(this.data.hotspots.length - 1)
 		},
 
         removeHotspot(index) {
