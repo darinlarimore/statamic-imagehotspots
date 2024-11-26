@@ -82,6 +82,7 @@
 							<div class="replicator-set-body publish-fields @container">
 								<set-field
 									v-for="field in fields"
+                                    v-show="showField(field, index)"
 									:key="field.handle"
 									:field="field"
 									:meta="meta.metas[index][field.handle]"
@@ -110,8 +111,16 @@
 </template>
 
 <script>
+import Validator from '../../../vendor/statamic/cms/resources/js/components/field-conditions/Validator';
 export default {
 	mixins: [Fieldtype],
+
+    inject: {
+        storeName: {
+            default: 'base'
+        }
+    },
+
 	data() {
 		return {
 			data: {
@@ -254,7 +263,7 @@ export default {
 		},
 
 		fieldPath(handle, index) {
-			return `${this.name}.hotspots[${index}].content.${handle}`
+			return `${this.fieldPathPrefix}.hotspots.${index}.content.${handle}`
 		},
 
 		errors(handle, index) {
@@ -262,6 +271,11 @@ export default {
 			if (!state) return []
 			return state.errors[this.fieldPath(handle, index)] || []
 		},
+
+        showField(field, index) {
+            let validator = new Validator(field, this.data.hotspots[index].content, this.$store, this.storeName);
+            return validator.passesConditions();
+        },
 	},
 }
 </script>

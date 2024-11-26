@@ -12,7 +12,10 @@
 		"vite": "^4.0.0"
 	},
 	"dependencies": {
+		"marked": "^15.0.2",
 		"postcss": "^8.4.47",
-		"tailwindcss": "^3.4.13"
+		"tailwindcss": "^3.4.13",
+		"underscore": "^1.13.7",
+		"uniqid": "^5.4.0"
 	}
 }
