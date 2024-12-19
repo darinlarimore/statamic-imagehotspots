@@ -157,6 +157,43 @@ class ImageHotSpots extends Fieldtype
     {
         return [
             [
+                'display' => __('Hotspot deadzone'),
+                'fields' => [
+                    'deadzone_left' => [
+                        'display' => __('Left %'),
+                        'type' => 'range',
+                        'min' => 0,
+                        'max' => 100,
+                        'default' => 0,
+                        'width' => 50,
+                    ],
+                    'deadzone_right' => [
+                        'display' => __('Right %'),
+                        'type' => 'range',
+                        'min' => 0,
+                        'max' => 100,
+                        'default' => 0,
+                        'width' => 50,
+                    ],
+                    'deadzone_top' => [
+                        'display' => __('Top %'),
+                        'type' => 'range',
+                        'min' => 0,
+                        'max' => 100,
+                        'default' => 0,
+                        'width' => 50,
+                    ],
+                    'deadzone_bottom' => [
+                        'display' => __('Bottom %'),
+                        'type' => 'range',
+                        'min' => 0,
+                        'max' => 100,
+                        'default' => 0,
+                        'width' => 50,
+                    ],
+                ],
+            ],
+            [
                 'display' => __('Fields'),
                 'fields' => [
                     'fields' => [

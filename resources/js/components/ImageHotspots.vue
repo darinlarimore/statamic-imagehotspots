@@ -28,8 +28,30 @@
 			<div class="i-relative">
 				<!-- hotspots should not be placed within the red border -->
 				<div
-					class="i-absolute i-w-full i-h-full i-border-red-500 i-border-opacity-25 i-border-[48px]"
+					class="i-absolute i-top-0 i-bg-red-500 i-opacity-25"
+                    :style="{
+                        height: config.deadzone_top + '%',
+                        left: config.deadzone_left + '%',
+                        right: config.deadzone_right + '%',
+                    }"
 				></div>
+                <div
+					class="i-absolute i-right-0 i-inset-y-0 i-bg-red-500 i-opacity-25"
+                    :style="{width: config.deadzone_right + '%'}"
+				></div>
+                <div
+					class="i-absolute i-bottom-0 i-bg-red-500 i-opacity-25"
+                    :style="{
+                        height: config.deadzone_bottom + '%',
+                        left: config.deadzone_left + '%',
+                        right: config.deadzone_right + '%',
+                    }"
+				></div>
+                <div
+					class="i-absolute i-left-0 i-inset-y-0 i-bg-red-500 i-opacity-25"
+                    :style="{width: config.deadzone_left + '%'}"
+				></div>
+
 				<img
 					ref="image"
 					:src="data.imageFile.url"
@@ -231,29 +253,15 @@ export default {
 			const mouseMove = (event) => {
 				// Constrain to image bounds and account for size of the hotspot
 				const rect = this.$refs.image.getBoundingClientRect()
-				const hotSpotSize = 48
-				const maxX = ((rect.width - hotSpotSize) / rect.width) * 100
-				const maxY = ((rect.height - hotSpotSize) / rect.height) * 100
-				const minX = 100 - maxX
-				const minY = 100 - maxY
+				const maxX = 100 - this.config.deadzone_right
+				const maxY = 100 - this.config.deadzone_bottom
+				const minX = this.config.deadzone_left
+				const minY = this.config.deadzone_top
+                const mouseY = startTop + ((event.clientY - startY) / rect.height) * 100
+                const mouseX = startLeft + ((event.clientX - startX) / rect.width) * 100
 
-				const x = Math.min(
-					maxX,
-					Math.max(
-						minX,
-						startLeft + ((event.clientX - startX) / rect.width) * 100
-					)
-				)
-				const y = Math.min(
-					maxY,
-					Math.max(
-						minY,
-						startTop + ((event.clientY - startY) / rect.height) * 100
-					)
-				)
-
-				hotspot.x = x
-				hotspot.y = y
+				hotspot.x = Math.min(Math.max(mouseX, minX), maxX)
+				hotspot.y = Math.min(Math.max(mouseY, minY), maxY)
 			}
 
 			const mouseUp = () => {
