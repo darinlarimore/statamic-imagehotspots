@@ -30,7 +30,7 @@ Add an `Image Hot Spots` field and configure the required asset `Container` sett
 5. Add a description for the hotspot.
 
 ![Image Hot Spots Field](/fields.png)
-**Note:** Hotspots cannot be placed in the red border area to prevent breaking the page bounds at certain sizes.
+**Note:** Red border area prevents breaking the page bounds at certain sizes. This is is configurable in the fieldset.
 
 ### Front End Templating Example
 This example uses Tailwind, Alpine.js, and the X-anchor alpine.js plugin. The `{{ image_hot_spots }}{{ /image_hot_spots }}` tag pair is used to loop through the hotspots and the `{{ hotspots }}{{ /hotspots }}` tag pair is used to access the hotspot data.
@@ -59,12 +59,15 @@ This example uses Tailwind, Alpine.js, and the X-anchor alpine.js plugin. The `{
 
 					{{# tooltip #}}
 					<div
-						class="bg-black p-4 shadow-lg w-64 text-white z-10"
+						class="bg-white p-4 shadow-lg w-96 z-10 flex flex-col gap-4 items-start"
 						x-cloak
 						x-show="open"
 						x-anchor.offset.5="$refs.button"
 					>
-						{{ content }}
+						<h3 class="h3">{{ content.heading }}</h3>
+						{{ img :src="content.image" size="400xAUTO" class="" }}
+						{{ content.text }}
+						{{ link:content.callout class="button" }}
 					</div>
 				</div>
 			{{ /hotspots }}
@@ -76,3 +79,10 @@ This example uses Tailwind, Alpine.js, and the X-anchor alpine.js plugin. The `{
 **Note:** the `-translate-x` and `-translate-y` classes are used to center the hotspots accurately and helps prevent the hotspots from breaking the page bounds.
 
 ![Image Hot Spots Front End Example](/imageHotspots.png)
+
+### v2.0.0
+**Note:** Breaking changes from v1 to v2:
+- The content of each hotspot now accepts an array of fieldtypes configured in the fieldset. Yay! But this will require you to reconfigure the fieldset, update your templates, and re-add content to your existing hotspots fields.
+
+### Contributors:
+@Jade-GG - Added support support for arbitrary fieldtypes in the hotspot content.
