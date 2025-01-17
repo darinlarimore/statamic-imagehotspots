@@ -29,27 +29,27 @@
 				<!-- hotspots should not be placed within the red border -->
 				<div
 					class="i-absolute i-top-0 i-bg-red-500 i-opacity-25"
-                    :style="{
-                        height: config.deadzone_top + '%',
-                        left: config.deadzone_left + '%',
-                        right: config.deadzone_right + '%',
-                    }"
+					:style="{
+						height: config.deadzone_top + '%',
+						left: config.deadzone_left + '%',
+						right: config.deadzone_right + '%',
+					}"
 				></div>
-                <div
+				<div
 					class="i-absolute i-right-0 i-inset-y-0 i-bg-red-500 i-opacity-25"
-                    :style="{width: config.deadzone_right + '%'}"
+					:style="{ width: config.deadzone_right + '%' }"
 				></div>
-                <div
+				<div
 					class="i-absolute i-bottom-0 i-bg-red-500 i-opacity-25"
-                    :style="{
-                        height: config.deadzone_bottom + '%',
-                        left: config.deadzone_left + '%',
-                        right: config.deadzone_right + '%',
-                    }"
+					:style="{
+						height: config.deadzone_bottom + '%',
+						left: config.deadzone_left + '%',
+						right: config.deadzone_right + '%',
+					}"
 				></div>
-                <div
+				<div
 					class="i-absolute i-left-0 i-inset-y-0 i-bg-red-500 i-opacity-25"
-                    :style="{width: config.deadzone_left + '%'}"
+					:style="{ width: config.deadzone_left + '%' }"
 				></div>
 
 				<img
@@ -82,7 +82,10 @@
 						class="flex gap-2 items-center"
 					>
 						<div class="replicator-set w-full">
-							<div class="replicator-set-header cursor-pointer" @click="toggleOpen(index)">
+							<div
+								class="replicator-set-header cursor-pointer"
+								@click="toggleOpen(index)"
+							>
 								<span class="text-xs rtl:ml-2 ltr:mr-2 p-2 whitespace-nowrap">
 									Hotspot {{ index }}
 								</span>
@@ -102,12 +105,12 @@
 								</div>
 							</div>
 							<div
-                                class="replicator-set-body publish-fields @container"
-                                v-show="isOpen(index)"
-                            >
+								class="replicator-set-body publish-fields @container"
+								v-show="isOpen(index)"
+							>
 								<set-field
 									v-for="field in fields"
-                                    v-show="showField(field, index)"
+									v-show="showField(field, index)"
 									:key="field.handle"
 									:field="field"
 									:meta="meta.metas[index][field.handle]"
@@ -136,15 +139,15 @@
 </template>
 
 <script>
-import Validator from '../../../vendor/statamic/cms/resources/js/components/field-conditions/Validator';
+import Validator from '../../../vendor/statamic/cms/resources/js/components/field-conditions/Validator'
 export default {
 	mixins: [Fieldtype],
 
-    inject: {
-        storeName: {
-            default: 'base'
-        }
-    },
+	inject: {
+		storeName: {
+			default: 'base',
+		},
+	},
 
 	data() {
 		return {
@@ -158,7 +161,7 @@ export default {
 				},
 				hotspots: this.value?.hotspots || [],
 			},
-            openHotspots: [],
+			openHotspots: [],
 		}
 	},
 
@@ -186,17 +189,17 @@ export default {
 		},
 	},
 	methods: {
-        toggleOpen(index) {
-            if (this.isOpen(index)) {
-                this.openHotspots.splice(this.openHotspots.indexOf(index), 1)
-            } else {
-                this.openHotspots.push(index)
-            }
-        },
+		toggleOpen(index) {
+			if (this.isOpen(index)) {
+				this.openHotspots.splice(this.openHotspots.indexOf(index), 1)
+			} else {
+				this.openHotspots.push(index)
+			}
+		},
 
-        isOpen(index) {
-            return this.openHotspots.indexOf(index) >= 0
-        },
+		isOpen(index) {
+			return this.openHotspots.indexOf(index) >= 0
+		},
 
 		imageFileClear() {
 			this.data.imageFile = {
@@ -233,15 +236,19 @@ export default {
 		},
 
 		addHotspot() {
-            this.data.hotspots.push({ x: 50, y: 50, content: { ...JSON.parse(JSON.stringify(this.meta.defaults)) } })
-            this.meta.metas.push(JSON.parse(JSON.stringify(this.meta.defaultmeta)))
-            this.toggleOpen(this.data.hotspots.length - 1)
+			this.data.hotspots.push({
+				x: 50,
+				y: 50,
+				content: { ...JSON.parse(JSON.stringify(this.meta.defaults)) },
+			})
+			this.meta.metas.push(JSON.parse(JSON.stringify(this.meta.defaultmeta)))
+			this.toggleOpen(this.data.hotspots.length - 1)
 		},
 
-        removeHotspot(index) {
-            this.data.hotspots.splice(index, 1)
-            this.meta.metas.splice(index, 1)
-        },
+		removeHotspot(index) {
+			this.data.hotspots.splice(index, 1)
+			this.meta.metas.splice(index, 1)
+		},
 
 		dragStart(index, event) {
 			const hotspot = this.data.hotspots[index]
@@ -257,8 +264,8 @@ export default {
 				const maxY = 100 - this.config.deadzone_bottom
 				const minX = this.config.deadzone_left
 				const minY = this.config.deadzone_top
-                const mouseY = startTop + ((event.clientY - startY) / rect.height) * 100
-                const mouseX = startLeft + ((event.clientX - startX) / rect.width) * 100
+				const mouseY = startTop + ((event.clientY - startY) / rect.height) * 100
+				const mouseX = startLeft + ((event.clientX - startX) / rect.width) * 100
 
 				hotspot.x = Math.min(Math.max(mouseX, minX), maxX)
 				hotspot.y = Math.min(Math.max(mouseY, minY), maxY)
@@ -297,10 +304,15 @@ export default {
 			return state.errors[this.fieldPath(handle, index)] || []
 		},
 
-        showField(field, index) {
-            let validator = new Validator(field, this.data.hotspots[index].content, this.$store, this.storeName);
-            return validator.passesConditions();
-        },
+		showField(field, index) {
+			let validator = new Validator(
+				field,
+				this.data.hotspots[index].content,
+				this.$store,
+				this.storeName
+			)
+			return validator.passesConditions()
+		},
 	},
 }
 </script>
