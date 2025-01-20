@@ -23,7 +23,7 @@ class ImageHotSpotsType extends Type
                 },
             ],
             'hotspots' => [
-                'type' => Type::listOf(GraphQL::type(HotspotType::NAME)),
+                'type' => GraphQL::listOf(GraphQL::type(HotspotType::NAME)),
                 'resolve' => function ($data) {
                     return $data['hotspots'] ?? [];
                 },
