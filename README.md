@@ -80,6 +80,27 @@ This example uses Tailwind, Alpine.js, and the X-anchor alpine.js plugin. The `{
 
 ![Image Hot Spots Front End Example](/imageHotspots.png)
 
+### GraphQL Support
+This addon supports GraphQL. You can access the hotspots data in your GraphQL queries like so:
+
+```graphql
+{
+	imageHotspots {
+		imageFile {
+			url
+			id
+			fileName
+			alt
+		}
+		hotspots {
+			x
+			y
+			content
+		}
+	}
+}
+```
+
 ### v2.0.0
 **Note:** Breaking changes from v1 to v2:
 - The content of each hotspot now accepts an array of fieldtypes configured in the fieldset. Yay! But this will require you to reconfigure the fieldset, update your templates, and re-add content to your existing hotspots fields.
