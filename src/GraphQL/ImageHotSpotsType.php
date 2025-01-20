@@ -2,11 +2,10 @@
 
 namespace Darinlarimore\StatamicImagehotspots\GraphQL;
 
-use Statamic\GraphQL\Types\Fieldtype;
-use GraphQL\Type\Definition\Type;
+use Rebing\GraphQL\Support\Type;
 use Statamic\Facades\GraphQL;
 
-class ImageHotSpotsType extends Fieldtype
+class ImageHotSpotsType extends Type
 {
     public const NAME = 'ImageHotSpots';
 
