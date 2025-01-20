@@ -10,6 +10,8 @@ use Statamic\Facades\AssetContainer;
 use Statamic\Fields\Fields;
 use Statamic\Fields\Values;
 use Statamic\Fieldtypes\Assets\UndefinedContainerException;
+use Darinlarimore\StatamicImagehotspots\GraphQL\ImageHotSpotsType;
+use Statamic\Facades\GraphQL;
 
 class ImageHotSpots extends Fieldtype
 {
@@ -238,5 +240,10 @@ class ImageHotSpots extends Fieldtype
                 ]
             ],
         ];
+    }
+
+    public function toGqlType()
+    {
+        return GraphQL::type(ImageHotSpotsType::NAME);
     }
 }
