@@ -107,3 +107,4 @@ This addon supports GraphQL. You can access the hotspots data in your GraphQL qu
 
 ### Contributors:
 @Jade-GG - Added support support for arbitrary fieldtypes in the hotspot content.
+@emran-alhaddad - Added GraphQL support.
