@@ -106,5 +106,5 @@ This addon supports GraphQL. You can access the hotspots data in your GraphQL qu
 - The content of each hotspot now accepts an array of fieldtypes configured in the fieldset. Yay! But this will require you to reconfigure the fieldset, update your templates, and re-add content to your existing hotspots fields.
 
 ### Contributors:
-@Jade-GG - Added support support for arbitrary fieldtypes in the hotspot content.
-@emran-alhaddad - Added GraphQL support.
+- @Jade-GG - Added support support for arbitrary fieldtypes in the hotspot content.
+- @emran-alhaddad - Added GraphQL support.
