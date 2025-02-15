@@ -7,6 +7,7 @@ This addon provides the following features:
 - Save hotspot positions in percentages for absolute positioning usage
 - Supports SVG images
 - Antlers tag to access hotspots in your templates
+- Assign fields for hotspot content
 
 ## How to Install
 You can search for this addon in the `Tools > Addons` section of the Statamic control panel and click **install**, or run the following command from your project root:
@@ -38,38 +39,50 @@ This example uses Tailwind, Alpine.js, and the X-anchor alpine.js plugin. The `{
 ```html
 <section>
 	{{ image_hot_spots field="image_hot_spots_field" }}
-		<div class="relative">
-			<img src="{{glide :src="image.url" w=1280}}" class="w-full" alt="{{image.alt}}">
+		<div class="relative z-20">
+			<img src="{{glide :src="image.url" w=1280}}" class="w-full rounded-lg" alt="{{image.alt}}">
 
 			{{ hotspots }}
+			<div x-data="{ open: false }">
 				<div
-					x-data="{ open: false }"
 					class="absolute"
+					:class="{ 'z-50': open }"
 					style="top: {{y}}%; left: {{x}}%; transform: translate(-12px, -12px);"
 					@mouseOver="open = true"
 					@mouseLeave="open = false"
 				>
 					<div
 						class="w-8 h-8 bg-blue-500 border-white border-2 rounded-full
-							flex justify-center items-center text-xs text-white font-bold cursor-pointer"
+							flex justify-center items-center text-white font-bold cursor-pointer"
 						x-ref="button"
 					>
-						{{svg src="heroicons/solid/plus.svg" class="size-6"}}
+						<svg class="size-4" width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M50.9 33.1113H33.0955V50.901C33.0955 53.7169 30.8235 56 28.0076 56C25.1917 56 22.921 53.7169 22.921 50.8998V33.099H5.10782C2.29191 33.099 0.00267483 30.8159 0.00390825 27.9988C0.00267483 26.5914 0.571284 25.3013 1.49265 24.3799C2.41526 23.4561 3.68815 22.8726 5.09426 22.8726H22.921V5.09651C22.921 3.68794 23.4797 2.41258 24.4023 1.49244C25.3249 0.56984 26.5941 -0.00123397 28.0027 -0.00123397C30.8174 -0.00123397 33.0955 2.28184 33.0955 5.09651V22.8739H50.9C53.7159 22.8739 55.999 25.1767 55.9977 27.9926C55.9965 30.8073 53.7134 33.1113 50.9 33.1113Z" fill="white"/> </svg>
 					</div>
 
 					{{# tooltip #}}
 					<div
-						class="bg-white p-4 shadow-lg w-96 z-10 flex flex-col gap-4 items-start"
-						x-cloak
 						x-show="open"
-						x-anchor.offset.5="$refs.button"
+						x-cloak
+						x-transition
+						x-anchor="$refs.button"
+						class="p-4"
 					>
-						<h3 class="h3">{{ content.heading }}</h3>
-						{{ img :src="content.image" size="400xAUTO" class="" }}
-						{{ content.text }}
-						{{ link:content.callout class="button" }}
+						<div
+							class="bg-white/65 p-4 shadow-lg w-96 flex-col gap-4 items-start flex rounded-lg backdrop-blur"
+						>
+							<h3 class="h3">{{ content.heading }}</h3>
+							<div>
+								{{ if content.text }}
+									<p class="line-text-sm">
+										{{ content.text | truncate(256, '...') }}
+									</p>
+								{{ /if }}
+							</div>
+						</div>
 					</div>
 				</div>
+
+			</div>
 			{{ /hotspots }}
 		</div>
 	{{ /image_hot_spots }}
