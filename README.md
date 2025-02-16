@@ -71,13 +71,11 @@ This example uses Tailwind, Alpine.js, and the X-anchor alpine.js plugin. The `{
 							class="bg-white/65 p-4 shadow-lg w-96 flex-col gap-4 items-start flex rounded-lg backdrop-blur"
 						>
 							<h3 class="h3">{{ content.heading }}</h3>
-							<div>
-								{{ if content.text }}
-									<p class="line-text-sm">
-										{{ content.text | truncate(256, '...') }}
-									</p>
-								{{ /if }}
-							</div>
+							{{ if content.text }}
+								<p class="line-text-sm">
+									{{ content.text | truncate(256, '...') }}
+								</p>
+							{{ /if }}
 						</div>
 					</div>
 				</div>
