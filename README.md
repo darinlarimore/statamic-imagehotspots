@@ -25,10 +25,9 @@ Add an `Image Hot Spots` field and configure the required asset `Container` sett
 
 ### Usage
 1. Add an image to the `Assets` field.
-2. Click the `Refresh Image` button.
-3. Click the `Add Hotspot` button.
-4. Click and drag the hotspot to the desired position.
-5. Add a description for the hotspot.
+2. Click the `Add Hotspot` button.
+3. Click and drag the hotspot to the desired position.
+4. Add content to the hotspot.
 
 ![Image Hot Spots Field](/fields.png)
 **Note:** Red border area prevents breaking the page bounds at certain sizes. This is is configurable in the fieldset.
