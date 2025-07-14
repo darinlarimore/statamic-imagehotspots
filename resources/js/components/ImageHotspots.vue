@@ -221,7 +221,7 @@ export default {
 					.then((response) => {
 						if (allowFileTypes.includes(response.data[0].extension)) {
 							this.data.imageFile = {
-								url: response.data[0].url,
+								url: response.data[0].url ?? response.data[0].downloadUrl,
 								id: response.data[0].id,
 								fileName: response.data[0].basename,
 								alt: response.data[0].values.alt,
