@@ -23,15 +23,24 @@ class HotSpotImageTag extends Tags
                 return '';
             }
 
-            $data = $this->context->get($field)->value();
+            $contextValue = $this->context->get($field);
 
-            if (!$data) {
+            // Handle both field objects and direct data arrays
+            if (is_object($contextValue) && method_exists($contextValue, 'value')) {
+                // This is a field object (page-level field)
+                $data = $contextValue->value();
+            } else {
+                // This is direct data (global field reference)
+                $data = $contextValue;
+            }
+
+            if (!$data || !is_array($data)) {
                 return '';
             }
 
             return [
-                'image' => $data['imageFile'],
-                'hotspots' => $data['hotspots'],
+                'image' => $data['imageFile'] ?? null,
+                'hotspots' => $data['hotspots'] ?? [],
             ];
 
         } catch (\Exception $e) {
