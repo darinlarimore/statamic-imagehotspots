@@ -2,14 +2,14 @@
 
 namespace Darinlarimore\StatamicImagehotspots\GraphQL;
 
-use Rebing\GraphQL\Support\Type as GQLType;
 use GraphQL\Type\Definition\Type;
-use Statamic\GraphQL\Types\ArrayType;
+use Rebing\GraphQL\Support\Type as GQLType;
 use Statamic\Facades\GraphQL;
+use Statamic\GraphQL\Types\ArrayType;
 
 class HotspotType extends GQLType
 {
-    const NAME = "Hotspot";
+    const NAME = 'Hotspot';
 
     protected $attributes = [
         'name' => self::NAME,

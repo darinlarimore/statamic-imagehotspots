@@ -6,7 +6,6 @@ use Statamic\Tags\Tags;
 
 class HotSpotImageTag extends Tags
 {
-
     protected static $handle = 'image_hot_spots';
 
     public static function render(...$arguments): string
@@ -19,7 +18,7 @@ class HotSpotImageTag extends Tags
         try {
             $field = $this->params->get('field') ?? null;
 
-            if (!$field) {
+            if (! $field) {
                 return '';
             }
 
@@ -34,7 +33,7 @@ class HotSpotImageTag extends Tags
                 $data = $contextValue;
             }
 
-            if (!$data || !is_array($data)) {
+            if (! $data || ! is_array($data)) {
                 return '';
             }
 
