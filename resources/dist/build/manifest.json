@@ -1,12 +1,13 @@
 {
   "resources/css/main.css": {
-    "file": "assets/main-d1188e9f.css",
-    "isEntry": true,
-    "src": "resources/css/main.css"
+    "file": "assets/main-B_Cllas5.css",
+    "src": "resources/css/main.css",
+    "isEntry": true
   },
   "resources/js/main.js": {
-    "file": "assets/main-10507a6c.js",
-    "isEntry": true,
-    "src": "resources/js/main.js"
+    "file": "assets/main-DrNvTZ-U.js",
+    "name": "main",
+    "src": "resources/js/main.js",
+    "isEntry": true
   }
 }
