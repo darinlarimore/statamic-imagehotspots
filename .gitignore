@@ -2,3 +2,5 @@ node_modules
 vendor
 mix-manifest.json
 .vscode
+composer.lock
+.phpunit.cache
