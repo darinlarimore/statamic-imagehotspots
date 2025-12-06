@@ -5,13 +5,25 @@
             "Darinlarimore\\StatamicImagehotspots\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Darinlarimore\\StatamicImagehotspots\\Tests\\": "tests"
+        }
+    },
     "require": {
         "statamic/cms": "^5.0",
         "php": "^8.2"
     },
+    "require-dev": {
+        "laravel/pint": "^1.0",
+        "orchestra/testbench": "^9.0",
+        "pestphp/pest": "^3.0",
+        "pestphp/pest-plugin-laravel": "^3.0"
+    },
     "config": {
         "allow-plugins": {
-            "pixelfear/composer-dist-plugin": true
+            "pixelfear/composer-dist-plugin": true,
+            "pestphp/pest-plugin": true
         }
     },
     "extra": {
@@ -24,6 +36,11 @@
                 "Darinlarimore\\StatamicImagehotspots\\ServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "test": "pest",
+        "lint": "pint",
+        "lint:check": "pint --test"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

@@ -2,12 +2,12 @@
 
 namespace Darinlarimore\StatamicImagehotspots\GraphQL;
 
-use Rebing\GraphQL\Support\Type as GQLType;
 use GraphQL\Type\Definition\Type;
+use Rebing\GraphQL\Support\Type as GQLType;
 
 class HotImageType extends GQLType
 {
-    const NAME = "HotImageType";
+    const NAME = 'HotImageType';
 
     protected $attributes = [
         'name' => self::NAME,

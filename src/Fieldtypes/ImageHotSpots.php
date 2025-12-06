@@ -2,16 +2,16 @@
 
 namespace Darinlarimore\StatamicImagehotspots\Fieldtypes;
 
+use Darinlarimore\StatamicImagehotspots\GraphQL\ImageHotSpotsType;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Statamic\Fields\Fieldtype;
 use Statamic\Exceptions\AssetContainerNotFoundException;
 use Statamic\Facades\AssetContainer;
+use Statamic\Facades\GraphQL;
 use Statamic\Fields\Fields;
+use Statamic\Fields\Fieldtype;
 use Statamic\Fields\Values;
 use Statamic\Fieldtypes\Assets\UndefinedContainerException;
-use Darinlarimore\StatamicImagehotspots\GraphQL\ImageHotSpotsType;
-use Statamic\Facades\GraphQL;
 
 class ImageHotSpots extends Fieldtype
 {
@@ -53,7 +53,7 @@ class ImageHotSpots extends Fieldtype
     public function preload()
     {
         $values = $this->field->value()['hotspots'] ?? [];
-        $metas = collect($values)->map(function($value) {
+        $metas = collect($values)->map(function ($value) {
             return $this->fields()->addValues($value['content'])->meta()->all();
         });
 
@@ -98,7 +98,7 @@ class ImageHotSpots extends Fieldtype
         if (array_key_exists('content', $row)) {
             return new Values(
                 array_merge($row, [
-                    'content' => $this->augmentRow('content', $row['content'], $shallow)
+                    'content' => $this->augmentRow('content', $row['content'], $shallow),
                 ])
             );
         }
@@ -112,12 +112,12 @@ class ImageHotSpots extends Fieldtype
         // Fix assets breaking when they start with `asset::`
         foreach ($this->fieldsByType('assets') as $field) {
             $assets = Arr::wrap($row[$field] ?? []);
-            $row[$field] = Arr::map($assets, fn($asset) => Str::after($asset, '::'));
+            $row[$field] = Arr::map($assets, fn ($asset) => Str::after($asset, '::'));
         }
 
         $data = $this->fields($index)->addValues($row)->{$method}()->values();
 
-        return new Values($data->filter(fn($value) => $value->raw())->all());
+        return new Values($data->filter(fn ($value) => $value->raw())->all());
     }
 
     public function fields($index = -1)
@@ -130,7 +130,7 @@ class ImageHotSpots extends Fieldtype
     public function fieldsByType($type)
     {
         return collect($this->config('fields'))
-            ->filter(fn($field) => ($field['field']['type'] ?? null) === $type)
+            ->filter(fn ($field) => ($field['field']['type'] ?? null) === $type)
             ->pluck('handle');
     }
 
@@ -237,7 +237,7 @@ class ImageHotSpots extends Fieldtype
                         'default' => true,
                         'width' => 50,
                     ],
-                ]
+                ],
             ],
         ];
     }
