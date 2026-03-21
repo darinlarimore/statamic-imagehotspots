@@ -6,7 +6,8 @@
 			:value="imageFileId"
 			ref="assets"
 			handle="assets"
-			:config="config"
+			:config="assetsConfig"
+			:meta="assetsMeta"
 			:readOnly="readOnly"
 			@input="updateImageFile"
 		></assets-fieldtype>
@@ -159,17 +160,15 @@ export default {
 					alt: this.value?.imageFile?.alt || null,
 					error: this.value?.imageFile?.error || null,
 				},
-				hotspots: this.value?.hotspots || [],
+				hotspots: (this.value?.hotspots || []).map((h) => ({
+					...h,
+					content: h.content ?? {},
+				})),
 			},
 			openHotspots: [],
 		}
 	},
 
-	mounted() {
-		this.config.max_files = 1
-		this.config.min_files = 0
-		this.config.mode = 'list'
-	},
 
 	watch: {
 		data: {
@@ -186,6 +185,27 @@ export default {
 
 		fields() {
 			return this.config.fields
+		},
+
+		assetsMeta() {
+			return {
+				container: this.meta.container,
+				data: null,
+				dynamicFolder: null,
+				rename_folder: null,
+			}
+		},
+
+		assetsConfig() {
+			return {
+				container: this.config.container || this.meta.container,
+				folder: this.config.folder,
+				restrict: this.config.restrict,
+				allow_uploads: this.config.allow_uploads,
+				max_files: 1,
+				min_files: 0,
+				mode: 'list',
+			}
 		},
 	},
 	methods: {
@@ -308,6 +328,7 @@ export default {
 			let validator = new Validator(
 				field,
 				this.data.hotspots[index].content,
+				this.fieldPath(field.handle, index),
 				this.$store,
 				this.storeName
 			)

@@ -33,7 +33,14 @@ class ImageHotSpots extends Fieldtype
             return collect($row)->map($this->processRow(...))->all();
         }
 
-        return array_merge($row, $this->fields($index)->addValues($row)->process()->values()->all());
+        if ($index === 'imageFile') {
+            return $row;
+        }
+
+        $content = $row['content'] ?? [];
+        $processedContent = $this->fields($index)->addValues($content)->process()->values()->all();
+
+        return array_merge($row, ['content' => $processedContent]);
     }
 
     public function preProcess($data)
@@ -47,14 +54,21 @@ class ImageHotSpots extends Fieldtype
             return collect($row)->map($this->preProcessRow(...))->all();
         }
 
-        return array_merge($row, $this->fields($index)->addValues($row)->preProcess()->values()->all());
+        if ($index === 'imageFile') {
+            return $row;
+        }
+
+        $content = $row['content'] ?? [];
+        $processedContent = $this->fields($index)->addValues($content)->preProcess()->values()->all();
+
+        return array_merge($row, ['content' => $processedContent]);
     }
 
     public function preload()
     {
         $values = $this->field->value()['hotspots'] ?? [];
         $metas = collect($values)->map(function ($value) {
-            return $this->fields()->addValues($value['content'])->meta()->all();
+            return $this->fields()->addValues($value['content'] ?? [])->meta()->all();
         });
 
         return [
@@ -62,6 +76,7 @@ class ImageHotSpots extends Fieldtype
             'defaultmeta' => $this->fields()->meta()->all(),
             'data' => $this->getItemData($this->field->value() ?? []),
             'metas' => $metas,
+            'container' => $this->container()->handle(),
         ];
     }
 
