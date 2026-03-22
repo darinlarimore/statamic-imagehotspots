@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darinlarimore\StatamicImagehotspots\Tests;
 
 use Darinlarimore\StatamicImagehotspots\ServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Statamic\Extend\Manifest;
 use Statamic\Providers\StatamicServiceProvider;
+use Statamic\Stache\Stores\UsersStore;
 use Statamic\Statamic;
 
 abstract class TestCase extends Orchestra
@@ -39,7 +42,7 @@ abstract class TestCase extends Orchestra
         $app['config']->set('statamic.editions.pro', true);
         $app['config']->set('statamic.users.repository', 'file');
         $app['config']->set('statamic.stache.stores.users', [
-            'class' => \Statamic\Stache\Stores\UsersStore::class,
+            'class' => UsersStore::class,
             'directory' => __DIR__.'/__fixtures__/users',
         ]);
     }
