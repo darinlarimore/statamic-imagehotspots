@@ -6,7 +6,8 @@
 		"format": "prettier ./resources/**/*.{css,js,vue} --write"
 	},
 	"devDependencies": {
-		"@vitejs/plugin-vue": "^5.0.0",
+		"@statamic/cms": "file:../../../../Users/darin/webdev/daring-designs/vendor/statamic/cms/packages/cms",
+		"@vitejs/plugin-vue": "^6.0.6",
 		"laravel-vite-plugin": "^1.3.0",
 		"prettier": "^3.2.5",
 		"vite": "^6.4.2"
