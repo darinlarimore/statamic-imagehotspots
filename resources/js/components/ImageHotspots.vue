@@ -9,7 +9,7 @@
 			:config="assetsConfig"
 			:meta="assetsMeta"
 			:readOnly="readOnly"
-			@input="updateImageFile"
+			@update:value="updateImageFile"
 		></assets-fieldtype>
 
 		<div v-else>
