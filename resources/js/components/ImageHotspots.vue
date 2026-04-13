@@ -143,12 +143,6 @@
 export default {
 	mixins: [Fieldtype],
 
-	inject: {
-		storeName: {
-			default: 'base',
-		},
-	},
-
 	data() {
 		return {
 			data: {
@@ -318,9 +312,7 @@ export default {
 		},
 
 		errors(handle, index) {
-			const state = this.$store.state.publish[this.storeName]
-			if (!state) return []
-			return state.errors[this.fieldPath(handle, index)] || []
+			return []
 		},
 
 		showField(field, index) {
