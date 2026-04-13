@@ -140,7 +140,6 @@
 </template>
 
 <script>
-import Validator from '../../../vendor/statamic/cms/resources/js/components/field-conditions/Validator'
 export default {
 	mixins: [Fieldtype],
 
@@ -325,14 +324,25 @@ export default {
 		},
 
 		showField(field, index) {
-			let validator = new Validator(
-				field,
-				this.data.hotspots[index].content,
-				this.fieldPath(field.handle, index),
-				this.$store,
-				this.storeName
-			)
-			return validator.passesConditions()
+			if (!field.if && !field.if_any && !field.show_when && !field.show_when_any && !field.unless && !field.unless_any && !field.hide_when && !field.hide_when_any) {
+				return true
+			}
+
+			const conditions = field.if || field.if_any || field.show_when || field.show_when_any || field.unless || field.unless_any || field.hide_when || field.hide_when_any
+			const values = this.data.hotspots[index].content
+			const isNegative = !!(field.unless || field.unless_any || field.hide_when || field.hide_when_any)
+			const matchAll = !!(field.if || field.show_when || field.unless || field.hide_when)
+
+			const results = Object.entries(conditions).map(([key, expected]) => {
+				const actual = values[key]
+				if (expected === 'empty') return !actual || actual === '' || (Array.isArray(actual) && actual.length === 0)
+				if (expected === 'not empty') return !!actual && actual !== '' && !(Array.isArray(actual) && actual.length === 0)
+				if (typeof expected === 'string' && expected.startsWith('not ')) return String(actual) !== expected.slice(4)
+				return String(actual) === String(expected)
+			})
+
+			const passes = matchAll ? results.every(Boolean) : results.some(Boolean)
+			return isNegative ? !passes : passes
 		},
 	},
 }

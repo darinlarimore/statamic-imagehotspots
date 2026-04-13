@@ -11,12 +11,12 @@
         }
     },
     "require": {
-        "statamic/cms": "^5.0",
+        "statamic/cms": "^5.0|^6.0",
         "php": "^8.2"
     },
     "require-dev": {
         "laravel/pint": "^1.0",
-        "orchestra/testbench": "^9.0",
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
         "pestphp/pest": "^3.0",
         "pestphp/pest-plugin-laravel": "^3.0"
     },
