@@ -76,7 +76,16 @@ class ImageHotSpots extends Fieldtype
             'defaultmeta' => $this->fields()->meta()->all(),
             'data' => $this->getItemData($this->field->value() ?? []),
             'metas' => $metas,
-            'container' => $this->container()->handle(),
+            'container' => [
+                'id' => $this->container()->id(),
+                'handle' => $this->container()->handle(),
+                'title' => $this->container()->title(),
+                'can_view' => true,
+                'can_upload' => true,
+                'can_edit' => true,
+                'can_delete' => true,
+                'can_create_folders' => true,
+            ],
         ];
     }
 
