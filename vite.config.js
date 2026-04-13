@@ -10,4 +10,14 @@ export default defineConfig({
 		}),
 		vue(),
 	],
+	build: {
+		rollupOptions: {
+			external: ['vue'],
+			output: {
+				globals: {
+					vue: 'Vue',
+				},
+			},
+		},
+	},
 })
