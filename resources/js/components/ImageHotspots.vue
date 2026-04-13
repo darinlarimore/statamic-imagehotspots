@@ -73,7 +73,7 @@
 				</div>
 			</div>
 			<div class="i-mt-2">
-				<button @click="addHotspot" class="btn">Add Hotspot</button>
+				<button @click="addHotspot" style="display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; font-size: 13px; font-weight: 500; border: 1px solid #c4cdd6; border-radius: 8px; background: white; cursor: pointer; color: #1c2e36;">+ Add Hotspot</button>
 			</div>
 			<div class="i-mt-2 i-w-full">
 				<div class="i-grid i-gap-2">
@@ -84,48 +84,50 @@
 					>
 						<div class="replicator-set w-full">
 							<div
-								class="replicator-set-header cursor-pointer"
+								class="flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-gray-700 cursor-pointer select-none"
 								@click="toggleOpen(index)"
 							>
-								<span class="text-xs rtl:ml-2 ltr:mr-2 p-2 whitespace-nowrap">
-									Hotspot {{ index }}
-								</span>
-								<div
-									class="py-2 rtl:pr-2 ltr:pl-2 replicator-set-header-inner flex justify-end items-end w-full"
-								>
-									<button
-										class="flex self-end group items-center"
-										@click.stop="removeHotspot(index)"
-										:aria-label="__('Delete Row')"
-									>
-										<svg-icon
-											name="micro/trash"
-											class="w-4 h-4 text-gray-600 group-hover:text-gray-900"
-										/>
-									</button>
+								<div class="flex items-center gap-2">
+									<svg class="w-4 h-4 text-gray-500 transition-transform" :class="{ 'rotate-90': isOpen(index) }" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" /></svg>
+									<span class="text-sm font-medium">
+										Hotspot {{ index }}
+									</span>
 								</div>
+								<button
+									class="flex items-center group"
+									@click.stop="removeHotspot(index)"
+								>
+									<svg class="w-4 h-4 text-gray-400 group-hover:text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clip-rule="evenodd" /></svg>
+								</button>
 							</div>
 							<div
-								class="replicator-set-body publish-fields @container"
 								v-show="isOpen(index)"
+								style="width: 100%;"
 							>
-								<set-field
+								<div
 									v-for="field in fields"
 									v-show="showField(field, index)"
 									:key="field.handle"
-									:field="field"
-									:meta="meta.metas[index][field.handle]"
-									:value="hotspot.content[field.handle]"
-									:parent-name="name"
-									:set-index="index"
-									:errors="errors(field.handle, index)"
-									:field-path="fieldPath(field.handle, index)"
-									class="p-4"
-									@updated="updated(field.handle, index, $event)"
-									@meta-updated="metaUpdated(field.handle, index, $event)"
-									@focus="$emit('focus')"
-									@blur="$emit('blur')"
-								/>
+									style="width: 100%; padding: 8px 16px; margin-bottom: 8px;"
+								>
+									<label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px;" v-text="field.display || field.handle"></label>
+									<div v-if="field.instructions" style="font-size: 12px; color: #737e8d; margin-bottom: 6px;">{{ field.instructions }}</div>
+									<div style="width: 100%; min-width: 0;">
+										<component
+											:is="field.type + '-fieldtype'"
+											:handle="field.handle"
+											:config="field"
+											:value="hotspot.content[field.handle]"
+											:meta="meta.metas[index] ? meta.metas[index][field.handle] : {}"
+											:read-only="readOnly"
+											:field-path-prefix="fieldPath(field.handle, index)"
+											@update:value="updated(field.handle, index, $event)"
+											@update:meta="metaUpdated(field.handle, index, $event)"
+											@focus="$emit('focus')"
+											@blur="$emit('blur')"
+										/>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
