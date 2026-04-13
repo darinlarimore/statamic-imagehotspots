@@ -16,6 +16,7 @@ function statamicExternals() {
                             globals: {
                                 vue: 'Vue',
                             },
+                            banner: 'if (window.__STATAMIC__) { window.Fieldtype = window.__STATAMIC__.core.FieldtypeMixin; }',
                         },
                     },
                 },
