@@ -76,7 +76,19 @@ class ImageHotSpots extends Fieldtype
             'defaultmeta' => $this->fields()->meta()->all(),
             'data' => $this->getItemData($this->field->value() ?? []),
             'metas' => $metas,
-            'container' => $this->container()->handle(),
+            'container' => [
+                'id' => $this->container()->id(),
+                'handle' => $this->container()->handle(),
+                'title' => $this->container()->title(),
+                'edit_url' => $this->container()->editUrl(),
+                'delete_url' => $this->container()->deleteUrl(),
+                'blueprint_url' => cp_route('blueprints.asset-containers.edit', $this->container()->handle()),
+                'can_view' => true,
+                'can_upload' => true,
+                'can_edit' => true,
+                'can_delete' => true,
+                'can_create_folders' => true,
+            ],
         ];
     }
 
