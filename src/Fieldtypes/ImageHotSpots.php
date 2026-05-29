@@ -4,6 +4,7 @@ namespace Darinlarimore\StatamicImagehotspots\Fieldtypes;
 
 use Darinlarimore\StatamicImagehotspots\GraphQL\ImageHotSpotsType;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Statamic\Exceptions\AssetContainerNotFoundException;
 use Statamic\Facades\AssetContainer;
@@ -82,7 +83,7 @@ class ImageHotSpots extends Fieldtype
                 'title' => $this->container()->title(),
                 'edit_url' => $this->container()->editUrl(),
                 'delete_url' => $this->container()->deleteUrl(),
-                'blueprint_url' => cp_route('blueprints.asset-containers.edit', $this->container()->handle()),
+                'blueprint_url' => $this->blueprintUrl(),
                 'can_view' => true,
                 'can_upload' => true,
                 'can_edit' => true,
@@ -95,6 +96,23 @@ class ImageHotSpots extends Fieldtype
     public function getItemData($items)
     {
         return $items;
+    }
+
+    /**
+     * Resolve the asset container blueprint edit URL.
+     *
+     * Statamic 5.73 renamed the route from `blueprints.asset-containers.edit`
+     * to `asset-containers.blueprint.edit`, so we resolve whichever exists.
+     */
+    protected function blueprintUrl()
+    {
+        $handle = $this->container()->handle();
+
+        $route = Route::has('statamic.cp.asset-containers.blueprint.edit')
+            ? 'asset-containers.blueprint.edit'
+            : 'blueprints.asset-containers.edit';
+
+        return cp_route($route, $handle);
     }
 
     public function augment($value)
