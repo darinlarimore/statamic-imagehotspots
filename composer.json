@@ -1,5 +1,6 @@
 {
     "name": "darinlarimore/statamic-imagehotspots",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Darinlarimore\\StatamicImagehotspots\\": "src"
